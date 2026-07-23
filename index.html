@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>System Maintenance – Sakindu Store</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#001f5b,#003399,#0044cc,#0033aa,#001f5b);
+  background-size:400% 400%;
+  animation:bgShift 8s ease infinite;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow:hidden;
+}
+@keyframes bgShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* PARTICLES */
+.particles{position:fixed;inset:0;pointer-events:none;overflow:hidden;}
+.particle{
+  position:absolute;
+  width:3px;height:3px;
+  border-radius:50%;
+  background:rgba(100,180,255,0.4);
+  animation:float linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) scale(0);opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:.5;}
+  100%{transform:translateY(-10vh) scale(1);opacity:0;}
+}
+
+/* CARD */
+.card{
+  background:rgba(0,20,80,0.75);
+  border:1px solid rgba(100,160,255,0.25);
+  border-radius:24px;
+  padding:44px 32px 40px;
+  max-width:420px;
+  width:100%;
+  text-align:center;
+  backdrop-filter:blur(20px);
+  box-shadow:0 20px 80px rgba(0,0,0,0.5),0 0 60px rgba(0,80,255,0.15);
+  position:relative;
+  z-index:10;
+  animation:cardIn .7s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes cardIn{
+  from{opacity:0;transform:scale(.85) translateY(30px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+
+/* GEAR */
+.gear-wrap{
+  position:relative;
+  width:100px;
+  height:100px;
+  margin:0 auto 28px;
+}
+.gear-outer{
+  width:100px;height:100px;
+  animation:spin 3s linear infinite;
+}
+.gear-inner{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:44px;height:44px;
+  animation:spin 3s linear infinite reverse;
+}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.gear-inner{animation:spinInner 2s linear infinite reverse;}
+@keyframes spinInner{
+  from{transform:translate(-50%,-50%) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+/* TITLE */
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(100,160,255,0.12);
+  border:1px solid rgba(100,160,255,0.3);
+  border-radius:20px;padding:4px 13px;
+  font-size:10px;font-weight:700;
+  color:#7bb8ff;letter-spacing:.8px;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.badge-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#4dff91;
+  animation:blink 1.2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+h1{
+  font-size:1.5rem;font-weight:800;
+  color:#ffffff;margin-bottom:6px;
+  letter-spacing:.3px;
+}
+h1 span{color:#5bc8ff;}
+
+.subtitle{
+  font-size:.72rem;color:#6a9fd8;
+  margin-bottom:22px;font-weight:500;
+}
+
+/* DIVIDER */
+.divider{
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(100,160,255,0.3),transparent);
+  margin-bottom:22px;
+}
+
+/* MESSAGE */
+.msg-box{
+  background:rgba(0,40,120,0.5);
+  border:1px solid rgba(100,160,255,0.18);
+  border-radius:14px;
+  padding:18px 20px;
+  margin-bottom:24px;
+}
+.msg-icon{font-size:1.4rem;margin-bottom:8px;display:block;}
+.msg-text{
+  font-size:.82rem;
+  color:#c5deff;
+  line-height:1.85;
+  font-weight:400;
+}
+.msg-text strong{color:#ffffff;font-weight:700;}
+
+/* WHATSAPP BUTTON */
+.wa-btn{
+  display:inline-flex;
+  align-items:center;justify-content:center;
+  gap:10px;
+  width:100%;
+  padding:15px 20px;
+  background:linear-gradient(135deg,#25d366,#1da851);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-size:.9rem;
+  font-weight:800;
+  text-decoration:none;
+  cursor:pointer;
+  letter-spacing:.3px;
+  box-shadow:0 6px 24px rgba(37,211,102,0.35);
+  transition:all .25s;
+  position:relative;
+  overflow:hidden;
+}
+.wa-btn::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);
+  pointer-events:none;
+}
+.wa-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 32px rgba(37,211,102,0.45);
+}
+.wa-btn:active{transform:scale(.97);}
+.wa-ico{font-size:1.3rem;flex-shrink:0;}
+.wa-txt{display:flex;flex-direction:column;align-items:flex-start;}
+.wa-txt span:first-child{font-size:.78rem;color:rgba(255,255,255,.7);font-weight:500;line-height:1;}
+.wa-txt span:last-child{font-size:.88rem;font-weight:800;line-height:1.4;}
+
+/* FOOTER */
+.footer-txt{
+  margin-top:20px;
+  font-size:.65rem;
+  color:rgba(100,150,255,0.5);
+  letter-spacing:.3px;
+}
+.footer-txt strong{color:rgba(100,150,255,.8);}
+
+/* PULSE RING */
+.pulse-ring{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:140px;height:140px;
+  border:2px solid rgba(91,200,255,0.15);
+  border-radius:50%;
+  animation:ringPulse 2s ease-out infinite;
+  pointer-events:none;
+}
+.pulse-ring:nth-child(2){animation-delay:.6s;width:180px;height:180px;}
+.pulse-ring:nth-child(3){animation-delay:1.2s;width:220px;height:220px;}
+@keyframes ringPulse{
+  0%{opacity:.6;transform:translate(-50%,-50%) scale(.8);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.3);}
+}
+</style>
+</head>
+<body>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- PULSE RINGS -->
+<div class="pulse-ring"></div>
+<div class="pulse-ring"></div>
+<div class="pulse-ring"></div>
+
+<!-- CARD -->
+<div class="card">
+
+  <!-- GEAR ANIMATION -->
+  <div class="gear-wrap">
+    <!-- Outer Gear -->
+    <svg class="gear-outer" viewBox="0 0 100 100" fill="none">
+      <path d="M43.3 5.5L38 5.5C37 5.5 36.2 6.3 36.2 7.3L35.8 13.5C33.4 14.3 31.2 15.5 29.2 16.9L23.6 14.1C22.7 13.7 21.7 14 21.1 14.8L17.8 19.9C17.2 20.7 17.3 21.8 18 22.4L22.7 26.5C22.1 28.8 21.8 31.2 21.8 33.7C21.8 36.1 22.1 38.5 22.7 40.8L18 44.9C17.3 45.5 17.2 46.6 17.8 47.4L21.1 52.5C21.7 53.3 22.7 53.6 23.6 53.2L29.2 50.4C31.2 51.8 33.4 53 35.8 53.8L36.2 60C36.2 61 37 61.8 38 61.8H43.3H56.7C57.7 61.8 58.5 61 58.5 60L58.9 53.8C61.3 53 63.5 51.8 65.5 50.4L71.1 53.2C72 53.6 73 53.3 73.6 52.5L76.9 47.4C77.5 46.6 77.4 45.5 76.7 44.9L72 40.8C72.6 38.5 72.9 36.1 72.9 33.7C72.9 31.2 72.6 28.8 72 26.5L76.7 22.4C77.4 21.8 77.5 20.7 76.9 19.9L73.6 14.8C73 14 72 13.7 71.1 14.1L65.5 16.9C63.5 15.5 61.3 14.3 58.9 13.5L58.5 7.3C58.5 6.3 57.7 5.5 56.7 5.5H43.3Z" fill="rgba(91,200,255,0.15)" stroke="#5bc8ff" stroke-width="1.5"/>
+      <circle cx="50" cy="33.7" r="12" fill="none" stroke="#5bc8ff" stroke-width="1.5"/>
+    </svg>
+    <!-- Inner small gear -->
+    <svg class="gear-inner" viewBox="0 0 44 44" fill="none">
+      <path d="M18 2H26L27 8C28.5 8.6 29.9 9.4 31.1 10.4L36.8 7.8L41.8 13L38.8 18.5C39.5 20 39.9 21.7 39.9 23.5C39.9 25.2 39.5 26.8 38.8 28.3L41.8 33.8L36.8 39L31.1 36.4C29.9 37.4 28.5 38.2 27 38.8L26 44H18L17 38.8C15.5 38.2 14.1 37.4 12.9 36.4L7.2 39L2.2 33.8L5.2 28.3C4.5 26.8 4.1 25.2 4.1 23.5C4.1 21.7 4.5 20 5.2 18.5L2.2 13L7.2 7.8L12.9 10.4C14.1 9.4 15.5 8.6 17 8L18 2Z" fill="rgba(0,100,255,0.3)" stroke="#3aa8ff" stroke-width="1.2"/>
+      <circle cx="22" cy="23.5" r="7" fill="none" stroke="#3aa8ff" stroke-width="1.2"/>
+    </svg>
+  </div>
+
+  <div class="badge"><span class="badge-dot"></span>System Maintenance</div>
+
+  <h1>System <span>Maintaining</span></h1>
+  <p class="subtitle">Sakindu Store · Temporary Downtime</p>
+
+  <div class="divider"></div>
+
+  <div class="msg-box">
+    <span class="msg-icon">🛠️</span>
+    <p class="msg-text">
+      <strong>Admin මෙම Website එක යාවත්කාලීන කරමින් සිටියි.</strong><br/><br/>
+      කරුණාකර WhatsApp හරහා සම්බන්ධ වන්න.<br/><br/>
+      සිදුවන අපහසුතාවය පිළිබඳව<br/>
+      <strong>SAKINDU STORE TEAM</strong> අපි සමාව ඉල්ලා සිටිමි.
+    </p>
+  </div>
+
+  <a class="wa-btn" href="https://wa.me/94760627795" target="_blank">
+    <span class="wa-ico">💬</span>
+    <div class="wa-txt">
+      <span>WhatsApp හරහා සම්බන්ධ වන්න</span>
+      <span>Sakindu Store Support</span>
+    </div>
+  </a>
+
+  <p class="footer-txt">© 2026 <strong>Sakindu Store</strong> · All rights reserved</p>
+
+</div>
+
+<script>
+// Generate floating particles
+const container = document.getElementById('particles');
+for(let i = 0; i < 35; i++){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random()*100+'%';
+  p.style.width = p.style.height = (Math.random()*3+2)+'px';
+  p.style.animationDuration = (Math.random()*10+8)+'s';
+  p.style.animationDelay = (Math.random()*10)+'s';
+  p.style.background = `rgba(${Math.random()>0.5?'100,180,255':'150,220,255'},${Math.random()*0.4+0.1})`;
+  container.appendChild(p);
+}
+</script>
+
+</body>
+</html>
