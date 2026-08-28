@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>Wallet – Sakindu Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="toast"></div>
+<nav class="nav">
+  <div class="nl">
+    <img class="logo-img" id="navLogo" src="" alt="logo" style="display:none;"/>
+    <div class="brand" id="navBrand">Sakindu<span>Store</span></div>
+  </div>
+  <div class="nr">
+    <div class="nav-wal" id="navWal" onclick="goTab('wallet')">💰 <span id="navBal">0.00</span></div>
+    <div class="nav-acc" id="navAcc" onclick="handleAccBtn()">
+      <div class="av" id="navAv">👤</div>
+      <span id="navAccLbl">Login</span>
+    </div>
+  </div>
+</nav>
+
+<div class="tabbar">
+  <div class="tbtab" id="tb-home" onclick="goTab('home')"><span class="tbi">🏠</span>Home</div>
+  <div class="tbtab" id="tb-wallet" onclick="goTab('wallet')"><span class="tbi">💰</span>Wallet</div>
+  <div class="tbtab" id="tb-orders" onclick="goTab('orders')"><span class="tbi">📦</span>Orders</div>
+  <div class="tbtab" id="tb-account" onclick="goTab('account')"><span class="tbi">👤</span>Account</div>
+</div>
+
+<!-- WALLET PAGE -->
+<div id="pg-wallet">
+  <div class="wal-wrap">
+    <div class="wal-card">
+      <div class="wal-lbl">Wallet Balance</div>
+      <div class="wal-bal"><span>LKR </span><span id="walBalNum">0.00</span></div>
+      <div class="wal-user" id="walUser">Login to view wallet</div>
+      <div class="wal-card-badge" id="walBadge" style="display:none;">✓ Verified Account</div>
+    </div>
+    <div class="rdm-card">
+      <h3>🎫 Redeem Code</h3>
+      <p>Admin විසින් ලබා දෙන code enter කරන්න. Wallet balance instant credit!</p>
+      <div class="rdm-row">
+        <input class="rdm-inp" id="rdm-inp" placeholder="ENTER CODE HERE" autocomplete="off"/>
+        <button class="rdm-btn" onclick="doRedeem()">Redeem</button>
+      </div>
+    </div>
+    <div class="tx-list">
+      <h3>📋 Transaction History</h3>
+      <div id="txListWrap"><div class="no-tx">No transactions yet</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-ov" id="authOv" onclick="if(event.target===this)closeAuth()">
+  <div class="auth-box">
+    <div class="auth-top">
+      <div class="auth-title">🔐 Welcome</div>
+      <div class="auth-close" onclick="closeAuth()">✕</div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab on" onclick="swAuth('login')">Login</button>
+      <button class="auth-tab" onclick="swAuth('reg')">Register</button>
+    </div>
+    <div class="auth-form on" id="af-login">
+      <div class="fg"><label>Email</label><input id="lem" type="email" placeholder="you@email.com"/></div>
+      <div class="fg"><label>Password</label><input id="lpw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="auth-err" id="lerr"></div>
+      <button class="auth-submit" onclick="doLogin()">Login →</button>
+    </div>
+    <div class="auth-form" id="af-reg">
+      <div class="fg"><label>Full Name</label><input id="rname" placeholder="Your name"/></div>
+      <div class="fg"><label>Email</label><input id="rem" type="email" placeholder="you@email.com"/></div>
+      <div class="fg"><label>Password</label><input id="rpw" type="password" placeholder="Min 6 characters"/></div>
+      <div class="fg"><label>Confirm Password</label><input id="rpw2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doReg()"/></div>
+      <div class="auth-err" id="rerr"></div>
+      <button class="auth-submit" onclick="doReg()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<div class="cfm-ov" id="cfmOv">
+  <div class="cfm-box">
+    <div class="cfm-ico" id="cfmIco">✅</div>
+    <div class="cfm-title" id="cfmTitle">Confirm</div>
+    <div class="cfm-msg" id="cfmMsg"></div>
+    <div class="cfm-btns" id="cfmBtns">
+      <button class="cfm-ok" id="cfmOk">Confirm</button>
+      <button class="cfm-cancel" onclick="closeCfm()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="adm-login-ov" id="admLoginOv">
+  <div class="adm-login-box">
+    <div class="adm-login-ico">⚙️</div>
+    <div class="adm-login-title">Admin Panel</div>
+    <div class="adm-login-sub">Admin account එකෙන් login වෙලා open කරන්න</div>
+    <input class="adm-login-inp" type="password" id="admPwInp" placeholder="Enter Password" onkeydown="if(event.key==='Enter')submitAdminLogin()"/>
+    <div class="adm-login-err" id="admLoginErr">Wrong password! Try again.</div>
+    <div class="adm-login-btns">
+      <button class="adm-enter-btn" onclick="submitAdminLogin()">ENTER</button>
+      <button class="adm-cancel-btn" onclick="closeAdminLogin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="storeClosedOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:700;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;">
+  <div style="max-width:340px;width:100%;">
+    <div style="font-size:3.5rem;margin-bottom:14px;">🔒</div>
+    <div style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:8px;">Store Closed</div>
+    <div style="font-size:.82rem;color:#888;margin-bottom:18px;line-height:1.6;" id="closedMsg">We'll be back soon!</div>
+    <div id="closedReason" style="background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.25);border-radius:12px;padding:13px 16px;margin-bottom:14px;display:none;">
+      <div style="font-size:.7rem;font-weight:700;color:#ff4757;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Reason</div>
+      <div style="font-size:.8rem;color:#ccc;line-height:1.6;" id="closedReasonTxt"></div>
+    </div>
+    <div id="closedUntil" style="display:none;background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;">
+      <div style="font-size:.7rem;color:#f0a500;font-weight:700;">Opens At</div>
+      <div style="font-size:.88rem;color:#fff;font-weight:700;" id="closedUntilTxt"></div>
+    </div>
+    <div style="font-size:.72rem;color:#555;margin-bottom:16px;">For support contact us on WhatsApp</div>
+    <a id="closedWaBtn" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:11px 22px;border-radius:12px;font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:12px;">💬 WhatsApp Support</a>
+    <div style="border-top:1px solid #1a1a1a;margin-top:18px;padding-top:16px;display:flex;flex-direction:column;gap:9px;">
+      <div id="closedAdminLoggedOut" style="display:none;">
+        <button onclick="hideStoreClosedOverlay();openAuth();" style="width:100%;padding:12px;background:rgba(255,71,87,.12);border:1px solid rgba(255,71,87,.3);border-radius:11px;color:#ff4757;font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;margin-bottom:8px;">🔑 Admin Login</button>
+      </div>
+      <div id="closedAdminLoggedIn" style="display:none;">
+        <div style="font-size:.7rem;color:#555;margin-bottom:8px;">Logged in as Admin</div>
+        <button onclick="hideStoreClosedOverlay();openAdminLogin();" style="width:100%;padding:12px;background:linear-gradient(135deg,#eccc68,#f0a500);border:none;border-radius:11px;color:#000;font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;">⚙️ Open Admin Panel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="orders.html">Orders</a>
+    <a href="account.html">Account</a>
+    <a href="https://wa.me/94760627795" target="_blank" rel="noopener">Support</a>
+  </div>
+  <div class="footer-copy" id="footerCopy">© 2026 Sakindu Store. All Rights Reserved.</div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+initPage('wallet');
+</script>
+</body>
+</html>
