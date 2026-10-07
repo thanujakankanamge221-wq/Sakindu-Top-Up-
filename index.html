@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SakinduStore | Sri Lanka's Fastest Game Top-up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">Sakindu<span>Store</span></div>
+  <nav class="desktop-nav">
+    <a href="#games">Games</a>
+    <a href="#order">Top Up</a>
+    <a href="#wallet">Wallet</a>
+    <a href="#orders">Orders</a>
+    <a href="premium.html">Premium Works</a>
+    <a href="#" onclick="openAuth('login');return false;" id="navAuthLink">Login</a>
+  </nav>
+  <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <div class="logo">Sakindu<span>Store</span></div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <a class="sidebar-item" href="#games" onclick="closeSidebar()"><span class="ic">🏠</span> Home</a>
+  <a class="sidebar-item active" href="#games" onclick="closeSidebar()"><span class="ic">🎮</span> Games</a>
+  <a class="sidebar-item" href="#wallet" onclick="closeSidebar()"><span class="ic">💼</span> Wallet</a>
+  <a class="sidebar-item" href="#orders" onclick="closeSidebar()"><span class="ic">🕓</span> Orders</a>
+  <a class="sidebar-item" href="#wallet" onclick="closeSidebar()"><span class="ic">🎁</span> Redeem Code</a>
+  <a class="sidebar-item" href="#orders" onclick="closeSidebar()"><span class="ic">🔍</span> Track Order</a>
+  <a class="sidebar-item" href="premium.html"><span class="ic">✨</span> Premium Works</a>
+  <a class="sidebar-item" href="#" onclick="closeSidebar();openAuth('login');return false;" id="sidebarAuthLink"><span class="ic">👤</span> Login / Profile</a>
+  <div class="sidebar-logout" id="sidebarLogout" style="display:none;" onclick="logoutUser()"><span>⏻</span> Logout</div>
+</div>
+
+<section class="hero-mini">
+  <h1>Diamonds, delivered <span style="color:var(--cyan);">instantly.</span></h1>
+  <p>ඔබේ favourite game එක තෝරන්න, UID එක verify කරන්න, seconds ගාණකින් top-up එක ලබාගන්න.</p>
+</section>
+
+<!-- GAMES CATALOG -->
+<section id="games">
+  <h2 class="section-title">🎮 Games Catalog</h2>
+  <p class="section-sub">Top-up කරන්න ඕන game එක select කරන්න</p>
+  <div class="game-grid">
+    <div class="game-card">
+      <div class="game-icon">🔥</div>
+      <h3>FREE FIRE</h3>
+      <div class="game-status"><span class="dot"></span> Active</div>
+      <a href="#order" class="btn btn-primary">TOP UP</a>
+    </div>
+    <div class="game-card">
+      <div class="game-badge soon">COMING SOON</div>
+      <div class="game-icon">🎯</div>
+      <h3>CALL OF DUTY MOBILE</h3>
+      <div class="btn btn-disabled">COMING SOON</div>
+    </div>
+    <div class="game-card">
+      <div class="game-badge soon">COMING SOON</div>
+      <div class="game-icon">⚔️</div>
+      <h3>BLOOD STRIKE</h3>
+      <div class="btn btn-disabled">COMING SOON</div>
+    </div>
+    <div class="game-card">
+      <div class="game-badge soon">COMING SOON</div>
+      <div class="game-icon">🪂</div>
+      <h3>FREE FIRE INDONESIA</h3>
+      <div class="btn btn-disabled">COMING SOON</div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER / TOP UP -->
+<section id="order">
+  <h2 class="section-title">Free Fire Top Up</h2>
+  <p class="section-sub">Account info එක දාලා package එකක් තෝරන්න</p>
+
+  <div class="order-panel">
+    <div class="step-label"><div class="step-num">1</div><h3>ENTER ACCOUNT INFO</h3></div>
+    <div class="field-row">
+      <input type="text" id="uidInput" placeholder="Player ID (UID) *">
+      <button class="btn btn-primary" id="verifyBtn" onclick="verifyUID()">Verify</button>
+    </div>
+    <div id="verifyStatus" class="verify-status"></div>
+    <div class="hint-banner">▶ තේරෙන්නේ නැත්තම් How-to-Top-up විඩියෝ එක බලන්න (WhatsApp Support)</div>
+    <div class="field-row">
+      <input type="text" id="waInput" placeholder="WhatsApp Number (Optional)">
+    </div>
+
+    <div class="step-label" style="margin-top:10px;"><div class="step-num">2</div><h3>SELECT PACKAGE</h3></div>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div id="pkgContainer"></div>
+
+    <div class="step-label" style="margin-top:26px;"><div class="step-num">3</div><h3>PAYMENT METHOD</h3></div>
+    <div class="pay-methods">
+      <div class="pay-method selected" onclick="selectPay('Bank Transfer', this)">🏦 Bank Transfer</div>
+      <div class="pay-method" onclick="selectPay('Ez Cash', this)">📱 Ez Cash</div>
+      <div class="pay-method" onclick="selectPay('Wallet Balance', this)">💼 Wallet Balance</div>
+    </div>
+
+    <div class="order-total">
+      <div>Total Amount</div>
+      <div class="amount" id="totalAmount">Rs. 0</div>
+    </div>
+    <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="placeOrder()">Order එක Confirm කරන්න</button>
+  </div>
+</section>
+
+<!-- WALLET -->
+<section id="wallet">
+  <h2 class="section-title">💼 My Wallet</h2>
+  <p class="section-sub">Balance එක බලන්න, payment proof upload කරන්න, redeem code යොදන්න</p>
+  <div class="wallet-grid">
+    <div class="wallet-card">
+      <h3>Wallet Balance</h3>
+      <p>ඔබේ current balance එක</p>
+      <div class="balance-tag" id="walletBalance">Rs. 0</div>
+    </div>
+    <div class="wallet-card">
+      <h3>📤 Upload Payment Proof</h3>
+      <p>Bank slip එක හෝ payment screenshot එක upload කරන්න</p>
+      <input type="file" id="proofFile" style="display:none;" onchange="uploadProof()">
+      <div class="upload-box" onclick="document.getElementById('proofFile').click()">📎 Click to upload screenshot</div>
+      <div id="proofStatus" class="verify-status"></div>
+    </div>
+    <div class="wallet-card">
+      <h3>🎁 Redeem Code</h3>
+      <p>ඔබ ළඟ redeem code එකක් තියෙනවා නම් type කරන්න</p>
+      <div class="field-row" style="margin-bottom:0;">
+        <input type="text" id="redeemInput" placeholder="e.g. SAKINDU100">
+        <button class="btn btn-primary" onclick="redeemCode()">Redeem</button>
+      </div>
+      <div id="redeemStatus" class="verify-status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER HISTORY -->
+<section id="orders">
+  <h2 class="section-title">🕓 Order History</h2>
+  <p class="section-sub">ඔබේ පසුගිය orders</p>
+  <div class="order-list" id="orderList"></div>
+</section>
+
+<section id="why">
+  <h2 class="section-title">ඇයි SakinduStore?</h2>
+  <p class="section-sub">Sri Lanka පුරාම gamers 1000+ ක් විශ්වාස කරන store එක</p>
+  <div class="features">
+    <div class="feature"><div class="ic">⚡</div><h3>Instant Delivery</h3><p>Order confirm උනාට පස්සේ minutes කිහිපයකින් diamonds ඔබේ account එකට.</p></div>
+    <div class="feature"><div class="ic">🔒</div><h3>Secure Payments</h3><p>Bank Transfer, Ez Cash, Wallet Balance — safe සහ trusted payment options.</p></div>
+    <div class="feature"><div class="ic">🎧</div><h3>24/7 Support</h3><p>ප්‍රශ්නයක් තියෙනවා නම් WhatsApp හරහා direct අපිට කතා කරන්න.</p></div>
+    <div class="feature"><div class="ic">💰</div><h3>Best LKR Rates</h3><p>Market එකේ තියෙන cheapest rates වලින් Free Fire Diamonds.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="logo" style="font-size:1.2rem;margin-bottom:12px;">Sakindu<span>Store</span></div>
+      <p>Sri Lanka's trusted game top-up store — instant delivery, secure payments, best LKR rates.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#games">Games</a></li>
+        <li><a href="#order">Top Up</a></li>
+        <li><a href="#orders">Orders</a></li>
+        <li><a href="premium.html">Premium Works</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="https://wa.me/94760627795" target="_blank">Contact Us</a></li>
+        <li><a href="developer.html">Website Developer</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Get in Touch</h4>
+      <ul>
+        <li><a href="https://wa.me/94760627795" target="_blank">+94 76 062 7795 · WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>&copy; 2026 SakinduStore. All rights reserved.</div>
+    <div style="margin-top:8px;">Developed By <span class="dev">Sakindu Daham</span></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/94760627795" target="_blank" class="wa-float">💬</a>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authOverlay">
+  <div class="modal">
+    <button class="close-x" onclick="closeAuth()">✕</button>
+    <h3 id="authTitle">Login</h3>
+    <p class="modal-sub" id="authSub">ඔබේ account එකට login වෙන්න</p>
+    <input type="text" id="authName" placeholder="Name" style="display:none;">
+    <input type="text" id="authPhone" placeholder="Phone Number">
+    <input type="password" id="authPass" placeholder="Password">
+    <button class="btn btn-primary btn-block" onclick="submitAuth()">Continue</button>
+    <div id="authMsg" class="verify-status"></div>
+    <div class="modal-switch" id="authSwitch">Account එකක් නැද්ද? <a href="#" onclick="toggleAuthMode();return false;">Sign Up</a></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
