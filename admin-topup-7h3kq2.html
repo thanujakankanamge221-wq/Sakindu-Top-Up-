@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Topup</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="images.js"></script>
+<style>
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-box{background:var(--bg-panel);border:1px solid var(--line);border-radius:20px;padding:36px;max-width:380px;width:100%;}
+  .login-box input{width:100%;padding:13px 16px;margin-bottom:14px;border-radius:10px;
+    background:var(--bg-deep);border:1px solid var(--line);color:var(--text);font-family:'Rajdhani';font-size:1rem;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-wrap">
+  <div class="login-box">
+    <h2 style="margin-bottom:6px;">🔒 Admin Topup</h2>
+    <p style="color:var(--muted);margin-bottom:20px;font-size:.9rem;">Staff-only tool — place a top-up order directly, auto-approved.</p>
+    <input type="password" id="topupPass" placeholder="Password">
+    <button class="btn btn-primary btn-block" onclick="topupLogin()">Unlock</button>
+    <div id="topupLoginMsg" class="verify-status" style="margin-top:10px;"></div>
+  </div>
+</div>
+
+<div id="topupScreen" style="display:none;">
+  <header>
+    <div class="logo">Admin<span>Topup</span></div>
+  </header>
+
+  <section id="order">
+    <div class="order-panel">
+      <div class="step-label"><div class="step-num">1</div><h3>PLAYER UID</h3></div>
+      <div class="field-row">
+        <input type="text" id="uidInput" placeholder="Player ID (UID) *">
+        <button class="btn btn-primary" id="verifyBtn" onclick="verifyUID()">Verify</button>
+      </div>
+      <div id="verifyStatus" class="verify-status"></div>
+
+      <div class="step-label" style="margin-top:10px;"><div class="step-num">2</div><h3>SELECT PACKAGE</h3></div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Prices ටික live site එකේම — Main Admin Panel වල Package Prices tab එකෙන් update කළොත් මෙතනත් update වේ.</p>
+      <div class="cat-tabs" id="catTabs"></div>
+      <div id="pkgContainer"></div>
+
+      <div class="step-label" style="margin-top:26px;"><div class="step-num">3</div><h3>CUSTOMER NOTE (optional)</h3></div>
+      <div class="field-row">
+        <input type="text" id="topupNote" placeholder="e.g. customer name / phone number / reference">
+      </div>
+
+      <div class="order-total">
+        <div>Total Amount</div>
+        <div class="amount" id="totalAmount">Rs. 0</div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="placeAdminTopup()">✅ Submit &amp; Auto-Approve</button>
+      <div id="topupMsg" class="verify-status" style="text-align:center;margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title" style="font-size:1.2rem;">Recent Admin Topups</h2>
+    <div class="order-list" id="topupHistoryList"></div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+<script>
+  const TOPUP_PASSWORD = 'tzrPSPm4u6D6';
+
+  function topupLogin(){
+    const p = document.getElementById('topupPass').value;
+    const msg = document.getElementById('topupLoginMsg');
+    if(p === TOPUP_PASSWORD){
+      sessionStorage.setItem('sakindu_admintopup_auth', '1');
+      showTopupScreen();
+    } else {
+      msg.textContent = '❌ Wrong password.';
+    }
+  }
+  function showTopupScreen(){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('topupScreen').style.display = 'block';
+    renderTopupHistory();
+  }
+
+  function placeAdminTopup(){
+    const uid = document.getElementById('uidInput').value.trim();
+    const note = document.getElementById('topupNote').value.trim();
+    const msg = document.getElementById('topupMsg');
+    if(!uid){ alert('UID එක දාන්න.'); return; }
+    if(!uidVerified){ alert('UID එක verify කරන්න.'); return; }
+    if(!selectedPkg){ alert('Package එකක් තෝරන්න.'); return; }
+
+    saveOrder({
+      id: Date.now(),
+      uid, player: verifiedPlayerName, package: selectedPkg.label, amount: selectedPkg.price,
+      payment: 'Admin Topup' + (note ? ' · ' + note : ''), status: 'Approved',
+      date: new Date().toLocaleString()
+    });
+    msg.innerHTML = '✅ Order placed & auto-approved!';
+    msg.className = 'verify-status ok';
+    document.getElementById('uidInput').value = '';
+    document.getElementById('topupNote').value = '';
+    document.getElementById('verifyStatus').innerHTML = '';
+    document.getElementById('totalAmount').textContent = 'Rs. 0';
+    document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+    selectedPkg = null; uidVerified = false; verifiedPlayerName = '';
+    renderTopupHistory();
+  }
+
+  function renderTopupHistory(){
+    const list = document.getElementById('topupHistoryList');
+    const orders = JSON.parse(localStorage.getItem('sakindu_orders') || '[]')
+      .filter(o => (o.payment||'').startsWith('Admin Topup')).reverse().slice(0, 10);
+    list.innerHTML = orders.length ? orders.map(o => `
+      <div class="order-row">
+        <div><div><strong>${o.package}</strong> — UID: ${o.uid}${o.player ? ' (' + o.player + ')' : ''}</div>
+        <div class="oid">${o.date} · ${o.payment}</div></div>
+        <div style="color:var(--gold);font-weight:700;">Rs. ${o.amount}</div>
+      </div>`).join('') : '<div class="empty-state">No admin topups yet.</div>';
+  }
+
+  if(sessionStorage.getItem('sakindu_admintopup_auth') === '1'){ showTopupScreen(); }
+</script>
+</body>
+</html>

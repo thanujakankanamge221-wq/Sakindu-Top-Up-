@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farlight84 | Coming Soon | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="images.js"></script>
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">Sakindu<span>Store</span></a>
+  <nav class="desktop-nav"><a href="index.html">Home</a><a href="index.html#games">Games</a></nav>
+</header>
+
+<div class="store-lock-overlay" id="storeLockOverlay">
+  <div class="lock-ic">🛠️</div>
+  <h1>Admin Maintenancing Website</h1>
+  <p>We are currently performing scheduled maintenance on SakinduStore. The site will be back online shortly. Thank you for your patience.</p>
+  <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary">Contact us on WhatsApp</a>
+</div>
+
+<section>
+  <div class="stub-wrap">
+    <img class="stub-img" id="icFarlight84" alt="Farlight84">
+    <script>document.getElementById('icFarlight84').src = typeof IMG_FARLIGHT84!=='undefined' ? IMG_FARLIGHT84 : '';</script>
+    <h1 style="margin-bottom:10px;">Farlight84</h1>
+    <p style="color:var(--muted);margin-bottom:22px;">මෙ game එකේ top-up service වෙලටදීම SakinduStore එකට එනවා. ඉවසීමෙන් සිටින්න!</p>
+    <a href="index.html#games" class="btn btn-primary">← Games ටිකට return වෙන්න</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-bottom">
+    <div>&copy; 2026 SakinduStore. All rights reserved.</div>
+    <div style="margin-top:8px;">Developed By <a href="developer.html" class="footer-dev-link">Sakindu Daham</a></div>
+  </div>
+</footer>
+<a href="https://wa.me/94760627795" target="_blank" class="wa-float">💬</a>
+<script>if(localStorage.getItem("sakindu_store_closed")==="1"){document.getElementById("storeLockOverlay").classList.add("show");}</script>
+</body>
+</html>

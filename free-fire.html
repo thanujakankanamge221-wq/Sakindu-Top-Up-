@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Fire Top Up | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="images.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Sakindu<span>Store</span></a>
+  <nav class="desktop-nav">
+    <a href="index.html">Home</a>
+    <a href="index.html#games">Games</a>
+    <a href="index.html#orders">Orders</a>
+  </nav>
+  <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+</header>
+
+<div class="store-lock-overlay" id="storeLockOverlay">
+  <div class="lock-ic">🛠️</div>
+  <h1>Admin Maintenancing Website</h1>
+  <p>We are currently performing scheduled maintenance on SakinduStore. The site will be back online shortly. Thank you for your patience.</p>
+  <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary">Contact us on WhatsApp</a>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <div class="logo">Sakindu<span>Store</span></div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <a class="sidebar-item" href="index.html"><span class="ic">🏠</span> Home</a>
+  <a class="sidebar-item active" href="index.html#games"><span class="ic">🎮</span> Games</a>
+  <a class="sidebar-item" href="index.html#wallet"><span class="ic">💼</span> Wallet</a>
+  <a class="sidebar-item" href="index.html#orders"><span class="ic">🕓</span> Orders</a>
+  <a class="sidebar-item" href="index.html#reviews"><span class="ic">⭐</span> Reviews</a>
+</div>
+
+<section class="hero-mini">
+  <img id="heroIcon" alt="Free Fire" style="width:110px;height:110px;object-fit:cover;border-radius:24px;margin:0 auto 16px;display:block;">
+  <script>document.getElementById('heroIcon').src = typeof IMG_FREEFIRE!=='undefined' ? IMG_FREEFIRE : '';</script>
+  <h1>Free Fire Top Up</h1>
+  <p>Account info එක දාලා package එකක් තෝරන්න — seconds ගාණකින් diamonds ඔබේ account එකට.</p>
+</section>
+
+<section id="order">
+  <div class="order-panel">
+    <div class="step-label"><div class="step-num">1</div><h3>ENTER ACCOUNT INFO</h3></div>
+    <div class="field-row">
+      <input type="text" id="uidInput" placeholder="Player ID (UID) *">
+      <button class="btn btn-primary" id="verifyBtn" onclick="verifyUID()">Verify</button>
+    </div>
+    <div id="verifyStatus" class="verify-status"></div>
+    <div class="field-row">
+      <input type="text" id="waInput" placeholder="WhatsApp Number (Optional)">
+    </div>
+
+    <div class="step-label" style="margin-top:10px;"><div class="step-num">2</div><h3>SELECT PACKAGE</h3></div>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div id="pkgContainer"></div>
+
+    <div class="step-label" style="margin-top:26px;"><div class="step-num">3</div><h3>PAYMENT METHOD</h3></div>
+    <div class="pay-methods">
+      <div class="pay-method selected" onclick="selectPay('Bank Transfer', this)">🏦 Bank Transfer</div>
+      <div class="pay-method" onclick="selectPay('Ez Cash', this)">📱 Ez Cash</div>
+      <div class="pay-method" onclick="selectPay('Wallet Balance', this)">💼 Wallet Balance</div>
+    </div>
+    <div style="text-align:center;margin:12px 0;">
+      <a href="https://wa.me/94760627795?text=Payment%20Methods" target="_blank" class="btn btn-ghost btn-sm">💬 Payment Details WhatsApp එකෙන් ගන්න</a>
+    </div>
+
+    <div class="order-total">
+      <div>Total Amount</div>
+      <div class="amount" id="totalAmount">Rs. 0</div>
+    </div>
+
+    <div id="receiptBlock">
+      <div class="step-label" style="margin-top:26px;"><div class="step-num">4</div><h3>UPLOAD PAYMENT RECEIPT</h3></div>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px;">Payment කරපු පසු, screenshot එක හෝ bank slip එක මෙතනින් upload කරන්න. WhatsApp open වෙන්නේ නැහැ — order එක site එකෙන්ම submit වෙනවා, Admin verify කරලා approve කරනකම් "Processing" status එකේ පවතී.</p>
+      <input type="file" id="receiptFile" accept="image/*" style="display:none;" onchange="document.getElementById('receiptFileLabel').textContent = '📎 ' + (this.files[0] ? this.files[0].name : 'Click to upload receipt')">
+      <div class="upload-box" onclick="document.getElementById('receiptFile').click()" id="receiptFileLabel">📎 Click to upload payment receipt *</div>
+    </div>
+
+    <div class="wallet-balance-block" id="walletBalanceBlock">
+      <div style="color:var(--muted);font-size:.9rem;margin-bottom:6px;">ඔබේ Wallet Balance එක</div>
+      <div class="amt" id="walletBalanceDisplay">Rs. 0</div>
+      <div style="color:var(--muted);font-size:.85rem;margin-top:8px;">Order confirm කළාම මේ balance එකෙන් amount එක deduct වී, instant approve වේ.</div>
+    </div>
+
+    <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="placeOrder()">Order එක Submit කරන්න</button>
+    <div id="orderMsg" class="verify-status" style="text-align:center;margin-top:10px;"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-bottom">
+    <div>&copy; 2026 SakinduStore. All rights reserved.</div>
+    <div style="margin-top:8px;">Developed By <a href="developer.html" class="footer-dev-link">Sakindu Daham</a></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/94760627795" target="_blank" class="wa-float">💬</a>
+
+<script src="app.js"></script>
+</body>
+</html>

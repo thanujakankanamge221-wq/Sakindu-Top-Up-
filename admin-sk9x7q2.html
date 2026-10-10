@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | SakinduStore</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .admin-wrap{max-width:1100px;margin:0 auto;padding:40px 5%;}
+  .admin-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;}
+  .admin-tab{padding:10px 18px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-weight:700;color:var(--muted);}
+  .admin-tab.active{background:linear-gradient(90deg,var(--cyan),var(--violet));color:#050818;border-color:transparent;}
+  .admin-panel-section{display:none;}
+  .admin-panel-section.active{display:block;}
+  .admin-table{width:100%;border-collapse:collapse;margin-top:16px;}
+  .admin-table th,.admin-table td{padding:12px;text-align:left;border-bottom:1px solid var(--line);font-size:.92rem;}
+  .admin-table th{color:var(--cyan);font-family:'Orbitron';font-size:.72rem;letter-spacing:.5px;}
+  .admin-table input{background:var(--bg-deep);border:1px solid var(--line);color:var(--text);
+    padding:7px 10px;border-radius:8px;width:100px;font-family:'Rajdhani';}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:30px;}
+  .stat-card{background:var(--bg-panel);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;}
+  .stat-card .num{font-family:'Orbitron';font-size:1.6rem;font-weight:800;color:var(--gold);}
+  .stat-card .lbl{color:var(--muted);font-size:.82rem;margin-top:4px;}
+  .mini-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--text);cursor:pointer;font-size:.8rem;margin-right:6px;}
+  .mini-btn.done{border-color:var(--green);color:var(--green);}
+  .mini-btn.del{border-color:var(--red);color:var(--red);}
+  .mini-btn.save{border-color:var(--cyan);color:var(--cyan);}
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-box{background:var(--bg-panel);border:1px solid var(--line);border-radius:20px;padding:36px;max-width:380px;width:100%;}
+  .login-box input{width:100%;padding:13px 16px;margin-bottom:14px;border-radius:10px;
+    background:var(--bg-deep);border:1px solid var(--line);color:var(--text);font-family:'Rajdhani';font-size:1rem;}
+  .add-code-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+  .add-code-row input{flex:1;min-width:140px;background:var(--bg-deep);border:1px solid var(--line);color:var(--text);
+    padding:11px 14px;border-radius:10px;font-family:'Rajdhani';}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-wrap">
+  <div class="login-box">
+    <h2 style="margin-bottom:6px;">🔒 Admin Access</h2>
+    <p style="color:var(--muted);margin-bottom:20px;font-size:.9rem;">SakinduStore Management Panel</p>
+    <input type="text" id="adminUser" placeholder="Username / Email">
+    <input type="password" id="adminPass" placeholder="Password">
+    <button class="btn btn-primary btn-block" onclick="adminLogin()">Login</button>
+    <div id="adminMsg" class="verify-status" style="margin-top:10px;"></div>
+  </div>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <header>
+    <div class="logo">Sakindu<span>Admin</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="adminLogout()">Logout</button>
+  </header>
+
+  <div class="admin-wrap">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="num" id="statOrders">0</div><div class="lbl">Total Orders</div></div>
+      <div class="stat-card"><div class="num" id="statPending">0</div><div class="lbl">Processing</div></div>
+      <div class="stat-card"><div class="num" id="statRevenue">0</div><div class="lbl">Revenue (Rs.)</div></div>
+      <div class="stat-card"><div class="num" id="statUsers">0</div><div class="lbl">Registered Users</div></div>
+    </div>
+
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchAdminTab('orders', this)">📦 Orders</div>
+      <div class="admin-tab" onclick="switchAdminTab('games', this)">🎮 Games</div>
+      <div class="admin-tab" onclick="switchAdminTab('wallets', this)">💼 Wallet Recharge</div>
+      <div class="admin-tab" onclick="switchAdminTab('codes', this)">🎁 Redeem Codes</div>
+      <div class="admin-tab" onclick="switchAdminTab('prices', this)">💰 FF Package Prices</div>
+      <div class="admin-tab" onclick="switchAdminTab('users', this)">👥 Users</div>
+      <div class="admin-tab" onclick="switchAdminTab('reviews', this)">⭐ Reviews</div>
+      <div class="admin-tab" onclick="switchAdminTab('store', this)">🏪 Store Status</div>
+      <div class="admin-tab" onclick="switchAdminTab('announce', this)">📢 Announcement</div>
+      <div class="admin-tab" onclick="switchAdminTab('videos', this)">🎬 Videos</div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="admin-panel-section active" id="tab-orders">
+      <div class="add-code-row">
+        <input type="text" id="orderSearch" placeholder="🔍 Search by UID or Player name" oninput="renderOrdersTable()">
+        <button class="btn btn-ghost" onclick="exportOrdersCSV()">⬇️ Export CSV</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>UID</th><th>Player</th><th>Package</th><th>Amount</th><th>Payment</th><th>Receipt</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- GAMES CRUD -->
+    <div class="admin-panel-section" id="tab-games">
+      <h3 style="margin-bottom:14px;">➕ Add New Game</h3>
+      <div class="add-code-row">
+        <input type="text" id="newGameName" placeholder="Game Name">
+        <input type="text" id="newGameDesc" placeholder="Short Description (optional)">
+        <select id="newGameStatus" style="background:var(--bg-deep);border:1px solid var(--line);color:var(--text);padding:11px 14px;border-radius:10px;">
+          <option value="coming-soon">Coming Soon</option>
+          <option value="active">Active</option>
+        </select>
+        <button class="btn btn-primary" onclick="addGame()">Add Game</button>
+        <button class="btn btn-ghost" onclick="resetGamesToDefault()">↺ Reset to Defaults</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>Description</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="gamesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- WALLET RECHARGE -->
+    <div class="admin-panel-section" id="tab-wallets">
+      <h3 style="margin-bottom:14px;">💼 Recharge a User's Wallet</h3>
+      <p style="color:var(--muted);margin-bottom:14px;">User (phone/email) තෝරලා, amount එක දාලා, Credit කරන්න — ඒ user ගේ wallet balance එකට වහාම එකතු වේ.</p>
+      <div class="add-code-row">
+        <select id="rechargeUserSelect" style="flex:1;min-width:180px;background:var(--bg-deep);border:1px solid var(--line);color:var(--text);padding:11px 14px;border-radius:10px;"></select>
+        <input type="number" id="rechargeAmount" placeholder="Amount (Rs.)">
+        <button class="btn btn-primary" onclick="rechargeWallet()">💰 Credit Wallet</button>
+      </div>
+      <div id="rechargeMsg" class="verify-status" style="margin-bottom:20px;"></div>
+      <table class="admin-table">
+        <thead><tr><th>User</th><th>Phone / Key</th><th>Wallet Balance</th></tr></thead>
+        <tbody id="walletsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- STORE STATUS -->
+    <div class="admin-panel-section" id="tab-store">
+      <h3 style="margin-bottom:14px;">🏪 Store Status</h3>
+      <p style="color:var(--muted);margin-bottom:18px;">Store එක close කළාම, site එකේ "තාවකාලිකව වසා ඇත" banner එක පෙන්වයි සහ orders block වේ.</p>
+      <p style="color:var(--gold);font-size:.85rem;margin-bottom:14px;">ℹ️ ඔබ Admin Panel එකට login වුනාම store එක auto close වේ — customers ට site එක full-screen "Under Maintenance" message එකක් පෙන්වයි. Ready උනාට පස්සේ මෙතනින් "Open the Store" click කරන්න.</p>
+      <div id="storeStatusDisplay" style="font-weight:800;font-size:1.2rem;margin-bottom:16px;"></div>
+      <button class="btn btn-primary" onclick="toggleStoreStatus()" id="storeToggleBtn"></button>
+    </div>
+
+    <!-- ANNOUNCEMENT -->
+    <div class="admin-panel-section" id="tab-announce">
+      <h3 style="margin-bottom:14px;">📢 Homepage Announcement Strip</h3>
+      <p style="color:var(--muted);margin-bottom:14px;">Homepage එකේ උඩින්ම scroll වෙන්නේ නැති banner එකක් විදිහට පෙන්වයි. හිස්ව තියෙනවා නම් strip එක hidden වේ.</p>
+      <textarea id="announceInput" style="width:100%;min-height:80px;background:var(--bg-deep);border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:10px;font-family:'Rajdhani';font-size:1rem;margin-bottom:14px;" placeholder="e.g. 🎉 This weekend only — extra 10% diamonds on all Monthly packages!"></textarea>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="saveAnnouncement()">💾 Save</button>
+        <button class="btn btn-ghost" onclick="clearAnnouncement()">🗑 Clear</button>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="admin-panel-section" id="tab-videos">
+      <h3 style="margin-bottom:14px;">🎬 Add Video</h3>
+      <p style="color:var(--muted);margin-bottom:14px;">YouTube URL එකක් හෝ Video ID එකක් paste කරන්න (e.g. https://youtu.be/dQw4w9WgXcQ).</p>
+      <div class="add-code-row">
+        <input type="text" id="newVideoTitle" placeholder="Video Title">
+        <input type="text" id="newVideoUrl" placeholder="YouTube URL or Video ID">
+        <button class="btn btn-primary" onclick="addVideo()">Add Video</button>
+      </div>
+      <div id="videoAddMsg" class="verify-status" style="margin-bottom:14px;"></div>
+      <table class="admin-table">
+        <thead><tr><th>Title</th><th>Video ID</th><th>Action</th></tr></thead>
+        <tbody id="videosBody"></tbody>
+      </table>
+    </div>
+
+    <!-- REDEEM CODES -->
+    <div class="admin-panel-section" id="tab-codes">
+      <h3 style="margin-bottom:14px;">➕ Add New Code</h3>
+      <div class="add-code-row">
+        <input type="text" id="newCodeName" placeholder="CODE (e.g. SAKINDU50)">
+        <input type="number" id="newCodeValue" placeholder="Value (Rs.)">
+        <button class="btn btn-primary" onclick="addCode()">Add Code</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>Code</th><th>Value (Rs.)</th><th>Action</th></tr></thead>
+        <tbody id="codesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- PACKAGE PRICES -->
+    <div class="admin-panel-section" id="tab-prices">
+      <p style="color:var(--muted);margin-bottom:10px;">Price වෙනස් කරලා "Save" click කරන්න — site එකේ වහාම update වේ.</p>
+      <table class="admin-table">
+        <thead><tr><th>Category</th><th>Package</th><th>Default Price</th><th>Current Price</th><th>Action</th></tr></thead>
+        <tbody id="pricesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- USERS -->
+    <div class="admin-panel-section" id="tab-users">
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>Phone</th></tr></thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="admin-panel-section" id="tab-reviews">
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>Location</th><th>Stars</th><th>Review</th><th>Action</th></tr></thead>
+        <tbody id="reviewsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  const ADMIN_USER = 'admin@sakindu.store';
+  const ADMIN_PASS = 'Sakindu123@';
+
+  function adminLogin(){
+    const u = document.getElementById('adminUser').value;
+    const p = document.getElementById('adminPass').value;
+    const msg = document.getElementById('adminMsg');
+    if(u === ADMIN_USER && p === ADMIN_PASS){
+      sessionStorage.setItem('sakindu_admin_auth', '1');
+      localStorage.setItem('sakindu_store_closed', '1');
+      showDashboard();
+    } else {
+      msg.textContent = '❌ Invalid credentials.';
+    }
+  }
+  function adminLogout(){
+    sessionStorage.removeItem('sakindu_admin_auth');
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+  function showDashboard(){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderAll();
+  }
+
+  function switchAdminTab(tab, el){
+    document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.admin-panel-section').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+  }
+
+  function renderAll(){
+    renderStats();
+    renderOrdersTable();
+    renderGamesTable();
+    renderVideosTable();
+    renderWalletsTable();
+    renderCodesTable();
+    renderPricesTable();
+    renderUsersTable();
+    renderReviewsTable();
+    renderStoreStatus();
+    document.getElementById('announceInput').value = localStorage.getItem('sakindu_announcement') || '';
+  }
+
+  /* ---- GAMES CRUD ---- */
+  function renderGamesTable(){
+    const games = getGames();
+    document.getElementById('gamesBody').innerHTML = games.map((g,i)=>`
+      <tr>
+        <td>${g.name}</td><td>${g.desc||'-'}</td>
+        <td>${g.status==='active' ? '✅ Active' : '🛠️ Coming Soon'}</td>
+        <td>
+          <button class="mini-btn save" onclick="toggleGameStatus(${i})">🔁 Toggle</button>
+          <button class="mini-btn del" onclick="deleteGame(${i})">🗑</button>
+        </td>
+      </tr>`).join('');
+  }
+  function addGame(){
+    const name = document.getElementById('newGameName').value.trim();
+    const desc = document.getElementById('newGameDesc').value.trim();
+    const status = document.getElementById('newGameStatus').value;
+    if(!name){ alert('Game name එකක් දාන්න.'); return; }
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    const games = getGames();
+    games.push({ slug, name, desc, status });
+    saveGames(games);
+    document.getElementById('newGameName').value = '';
+    document.getElementById('newGameDesc').value = '';
+    renderGamesTable();
+  }
+  function toggleGameStatus(i){
+    const games = getGames();
+    games[i].status = games[i].status === 'active' ? 'coming-soon' : 'active';
+    saveGames(games);
+    renderGamesTable();
+  }
+  function deleteGame(i){
+    const games = getGames();
+    games.splice(i,1);
+    saveGames(games);
+    renderGamesTable();
+  }
+  function resetGamesToDefault(){
+    if(!confirm('Games list එක default state එකට reset කරනවද? ඔබ දාපු custom games/changes ටික delete වේ.')) return;
+    localStorage.removeItem('sakindu_games');
+    renderGamesTable();
+  }
+
+  /* ---- VIDEOS ---- */
+  function renderVideosTable(){
+    const videos = getVideos();
+    document.getElementById('videosBody').innerHTML = videos.length ? videos.map((v,i)=>`
+      <tr><td>${v.title}</td><td>${v.id}</td>
+        <td><button class="mini-btn del" onclick="deleteVideo(${i})">🗑</button></td>
+      </tr>`).join('') : `<tr><td colspan="3" style="color:var(--muted);text-align:center;">No videos yet.</td></tr>`;
+  }
+  function addVideo(){
+    const title = document.getElementById('newVideoTitle').value.trim();
+    const urlInput = document.getElementById('newVideoUrl').value.trim();
+    const msg = document.getElementById('videoAddMsg');
+    const id = youtubeIdFromInput(urlInput);
+    if(!title || !id){ msg.textContent = '❌ Title එකක් සහ valid YouTube URL/ID එකක් දාන්න.'; msg.className='verify-status'; return; }
+    const videos = getVideos();
+    videos.push({ title, id });
+    saveVideos(videos);
+    document.getElementById('newVideoTitle').value = '';
+    document.getElementById('newVideoUrl').value = '';
+    msg.textContent = '✅ Video added!';
+    msg.className = 'verify-status ok';
+    renderVideosTable();
+  }
+  function deleteVideo(i){
+    const videos = getVideos();
+    videos.splice(i,1);
+    saveVideos(videos);
+    renderVideosTable();
+  }
+
+  /* ---- WALLET RECHARGE ---- */
+  function renderWalletsTable(){
+    const users = JSON.parse(localStorage.getItem('sakindu_users') || '{}');
+    const wallets = getAllWallets();
+    const select = document.getElementById('rechargeUserSelect');
+    const phones = Object.keys(users);
+    select.innerHTML = phones.length
+      ? phones.map(p => `<option value="${p}">${users[p].name} (${p})</option>`).join('')
+      : `<option value="">No registered users yet</option>`;
+
+    const rows = phones.map(p => `
+      <tr><td>${users[p].name}</td><td>${p}</td><td>Rs. ${wallets[p] || 0}</td></tr>`).join('');
+    document.getElementById('walletsBody').innerHTML = rows || `<tr><td colspan="3" style="color:var(--muted);text-align:center;">No users yet.</td></tr>`;
+  }
+  function rechargeWallet(){
+    const phone = document.getElementById('rechargeUserSelect').value;
+    const amount = parseInt(document.getElementById('rechargeAmount').value, 10);
+    const msg = document.getElementById('rechargeMsg');
+    if(!phone){ msg.textContent = 'User කෙනෙක් select කරන්න.'; msg.className='verify-status'; return; }
+    if(!amount || amount <= 0){ msg.textContent = 'වැරදි amount එකක්.'; msg.className='verify-status'; return; }
+    const newBal = creditUserWallet(phone, amount);
+    msg.textContent = `✅ Rs. ${amount} credited! New balance: Rs. ${newBal}`;
+    msg.className = 'verify-status ok';
+    document.getElementById('rechargeAmount').value = '';
+    renderWalletsTable();
+  }
+
+  /* ---- STORE STATUS ---- */
+  function renderStoreStatus(){
+    const closed = isStoreClosed();
+    document.getElementById('storeStatusDisplay').innerHTML = closed
+      ? '<span style="color:var(--red);">🛑 Store is CLOSED</span>'
+      : '<span style="color:var(--green);">✅ Store is OPEN</span>';
+    document.getElementById('storeToggleBtn').textContent = closed ? '✅ Open the Store' : '🛑 Close the Store';
+  }
+  function toggleStoreStatus(){
+    localStorage.setItem('sakindu_store_closed', isStoreClosed() ? '0' : '1');
+    renderStoreStatus();
+  }
+
+  function renderStats(){
+    const orders = JSON.parse(localStorage.getItem('sakindu_orders') || '[]');
+    const users = JSON.parse(localStorage.getItem('sakindu_users') || '{}');
+    document.getElementById('statOrders').textContent = orders.length;
+    document.getElementById('statPending').textContent = orders.filter(o=>o.status==='Processing').length;
+    document.getElementById('statRevenue').textContent = orders.reduce((s,o)=>s+o.amount,0);
+    document.getElementById('statUsers').textContent = Object.keys(users).length;
+  }
+
+  function renderOrdersTable(){
+    const allOrders = JSON.parse(localStorage.getItem('sakindu_orders') || '[]');
+    const term = (document.getElementById('orderSearch')?.value || '').trim().toLowerCase();
+    const filtered = term
+      ? allOrders.filter((o,i) => (o.uid||'').toLowerCase().includes(term) || (o.player||'').toLowerCase().includes(term))
+        .map(o => ({...o, _idx: allOrders.indexOf(o)}))
+      : allOrders.map((o,i) => ({...o, _idx: i}));
+    const orders = filtered;
+    document.getElementById('ordersBody').innerHTML = orders.length ? orders.map((o)=>{ const i = o._idx; return `
+      <tr>
+        <td>${o.uid}</td><td>${o.player || '-'}</td><td>${o.package}</td><td>Rs. ${o.amount}</td><td>${o.payment}</td>
+        <td>${o.receipt ? `<a href="${o.receipt}" target="_blank"><img src="${o.receipt}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--line);"></a>` : '-'}</td>
+        <td>${o.date}</td>
+        <td>${o.status}</td>
+        <td>
+          <button class="mini-btn done" onclick="markDone(${i})">✔ Approve</button>
+          <button class="mini-btn del" onclick="deleteOrder(${i})">🗑</button>
+        </td>
+      </tr>`; }).join('') : `<tr><td colspan="9" style="color:var(--muted);text-align:center;">No orders yet.</td></tr>`;
+  }
+  function markDone(i){
+    const orders = JSON.parse(localStorage.getItem('sakindu_orders') || '[]');
+    orders[i].status = 'Approved';
+    localStorage.setItem('sakindu_orders', JSON.stringify(orders));
+    renderAll();
+  }
+  function exportOrdersCSV(){
+    const orders = JSON.parse(localStorage.getItem('sakindu_orders') || '[]');
+    if(!orders.length){ alert('No orders to export.'); return; }
+    const headers = ['UID','Player','Package','Amount','Payment','Date','Status'];
+    const rows = orders.map(o => [o.uid, o.player||'', o.package, o.amount, o.payment, o.date, o.status]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'sakindustore-orders.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function saveAnnouncement(){
+    const text = document.getElementById('announceInput').value.trim();
+    localStorage.setItem('sakindu_announcement', text);
+    alert('✅ Announcement saved!');
+  }
+  function clearAnnouncement(){
+    localStorage.removeItem('sakindu_announcement');
+    document.getElementById('announceInput').value = '';
+    alert('🗑 Announcement cleared.');
+  }
+
+  function deleteOrder(i){
+    const orders = JSON.parse(localStorage.getItem('sakindu_orders') || '[]');
+    orders.splice(i,1);
+    localStorage.setItem('sakindu_orders', JSON.stringify(orders));
+    renderAll();
+  }
+
+  function getCodes(){
+    return JSON.parse(localStorage.getItem('sakindu_redeem_codes') || JSON.stringify({ "SAKINDU100": 100, "FREEFIRE50": 50, "WELCOME200": 200 }));
+  }
+  function renderCodesTable(){
+    const codes = getCodes();
+    const entries = Object.entries(codes);
+    document.getElementById('codesBody').innerHTML = entries.length ? entries.map(([code,val])=>`
+      <tr><td>${code}</td><td>Rs. ${val}</td>
+        <td><button class="mini-btn del" onclick="deleteCode('${code}')">🗑 Delete</button></td>
+      </tr>`).join('') : `<tr><td colspan="3" style="color:var(--muted);text-align:center;">No codes yet.</td></tr>`;
+  }
+  function addCode(){
+    const name = document.getElementById('newCodeName').value.trim().toUpperCase();
+    const value = parseInt(document.getElementById('newCodeValue').value, 10);
+    if(!name || !value){ alert('Code name සහ value දෙකම දාන්න.'); return; }
+    const codes = getCodes();
+    codes[name] = value;
+    localStorage.setItem('sakindu_redeem_codes', JSON.stringify(codes));
+    document.getElementById('newCodeName').value = '';
+    document.getElementById('newCodeValue').value = '';
+    renderCodesTable();
+  }
+  function deleteCode(code){
+    const codes = getCodes();
+    delete codes[code];
+    localStorage.setItem('sakindu_redeem_codes', JSON.stringify(codes));
+    renderCodesTable();
+  }
+
+  function renderPricesTable(){
+    const overrides = getPriceOverrides();
+    let rows = '';
+    Object.keys(packageData).forEach(cat => {
+      packageData[cat].items.forEach(p => {
+        const key = `${cat}::${p.label}`;
+        const current = overrides[key] !== undefined ? overrides[key] : p.price;
+        rows += `
+          <tr>
+            <td>${cat}</td><td>${p.label}</td><td>Rs. ${p.price}</td>
+            <td><input type="number" id="price-${key}" value="${current}"></td>
+            <td><button class="mini-btn save" onclick="savePrice('${key}')">💾 Save</button></td>
+          </tr>`;
+      });
+    });
+    document.getElementById('pricesBody').innerHTML = rows;
+  }
+  function savePrice(key){
+    const val = parseInt(document.getElementById(`price-${key}`).value, 10);
+    if(!val){ alert('වැරදි price එකක්.'); return; }
+    const overrides = getPriceOverrides();
+    overrides[key] = val;
+    localStorage.setItem('sakindu_price_overrides', JSON.stringify(overrides));
+    alert('✅ Price updated!');
+  }
+
+  function renderUsersTable(){
+    const users = JSON.parse(localStorage.getItem('sakindu_users') || '{}');
+    document.getElementById('usersBody').innerHTML = Object.keys(users).length ? Object.entries(users).map(([phone,u])=>`
+      <tr><td>${u.name}</td><td>${phone}</td></tr>`).join('') : `<tr><td colspan="2" style="color:var(--muted);text-align:center;">No users yet.</td></tr>`;
+  }
+
+  function renderReviewsTable(){
+    const reviews = getReviews();
+    document.getElementById('reviewsBody').innerHTML = reviews.length ? reviews.map((r,i)=>`
+      <tr>
+        <td>${r.name}</td><td>${r.loc}</td><td>${'★'.repeat(r.stars)}</td><td style="max-width:260px;">${r.text}</td>
+        <td><button class="mini-btn del" onclick="deleteReview(${i})">🗑</button></td>
+      </tr>`).join('') : `<tr><td colspan="5" style="color:var(--muted);text-align:center;">No reviews yet.</td></tr>`;
+  }
+  function deleteReview(i){
+    const reviews = getReviews();
+    reviews.splice(i,1);
+    localStorage.setItem('sakindu_reviews', JSON.stringify(reviews));
+    renderReviewsTable();
+  }
+
+  if(sessionStorage.getItem('sakindu_admin_auth') === '1'){ showDashboard(); }
+</script>
+</body>
+</html>
