@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Other Service | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="db.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Sakindu<span>Store</span></a>
+  <nav class="desktop-nav">
+    <a href="index.html">Home</a>
+    <a href="index.html#games">Games</a>
+    <a href="developer.html">Website Developer</a>
+  </nav>
+</header>
+
+<div class="store-lock-overlay" id="storeLockOverlay">
+  <div class="lock-ic">🛠️</div>
+  <h1>Admin Maintenancing Website</h1>
+  <p>We are currently performing scheduled maintenance on SakinduStore. The site will be back online shortly. Thank you for your patience.</p>
+  <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary">Contact us on WhatsApp</a>
+</div>
+
+<section class="hero-mini">
+  <h1>Other <span style="color:var(--violet);">Service</span></h1>
+  <p>Game top-ups වලට අමතරව Sakindu ලබාදෙන services. දැන් Available services පහළින්.</p>
+</section>
+
+<section>
+  <h2 class="section-title">✅ Available now</h2>
+  <p class="section-sub">දැන්ම පාවිච්චි කළ හැකි services</p>
+  <div class="premium-grid">
+    <div class="premium-card" onclick="location.href='ff-player-info.html'">
+      <span class="svc-badge on">AVAILABLE</span>
+      <div class="ic">🔍</div>
+      <h3>Free Fire Player Info</h3>
+      <p>UID එක ගහලා Name, Level, Likes, Ranks, Guild, Pet ඇතුළු විස්තර ඔක්කොම බලන්න (පැය 24කට 2 පාරයි)</p>
+    </div>
+    <div class="premium-card" onclick="location.href='ff-account-value.html'">
+      <span class="svc-badge on">AVAILABLE</span>
+      <div class="ic">💰</div>
+      <h3>Free Fire Account Value</h3>
+      <p>UID එක ගහලා ඔබේ account එකේ Value එක (Rarity, USD, BDT) බලන්න (පැය 24කට 2 පාරයි)</p>
+    </div>
+    <div class="premium-card" onclick="location.href='shell-pins.html'">
+      <span class="svc-badge on">AVAILABLE</span>
+      <div class="ic">🐚</div>
+      <h3>Shell Topup Redeem Pins</h3>
+      <p>Shell Topup (Free Fire) සඳහා Shells ලබාගන්න Redeem Pins</p>
+    </div>
+    <div class="premium-card" onclick="location.href='event-banners.html'">
+      <span class="svc-badge on">AVAILABLE</span>
+      <div class="ic">🖼️</div>
+      <h3>Event Banner</h3>
+      <p>Custom event banners සහ promotional graphics</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="section-title">🛠️ Coming soon</h2>
+  <p class="section-sub">ළඟදීම එනවා</p>
+  <div class="premium-grid">
+    <div class="premium-card soon" onclick="showUnavailable('Reseller Program')">
+      <span class="svc-badge">COMING SOON</span>
+      <div class="ic">🤝</div>
+      <h3>Reseller Program</h3>
+      <p>ඔබටත් SakinduStore reseller කෙනෙක් වෙන්න</p>
+    </div>
+    <div class="premium-card soon" onclick="showUnavailable('Graphic Design')">
+      <span class="svc-badge">COMING SOON</span>
+      <div class="ic">🎨</div>
+      <h3>Graphic Design</h3>
+      <p>Logos, thumbnails, social media designs</p>
+    </div>
+    <div class="premium-card soon" onclick="location.href='game.html?slug=rare-uid'">
+      <span class="svc-badge">COMING SOON</span>
+      <div class="ic">💎</div>
+      <h3>Rare UID</h3>
+      <p>Premium rare Free Fire UID numbers</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-disclaimer"><strong>Disclaimer:</strong> Sakindu Topup is an independent third-party digital service provider and is not affiliated with, endorsed by, or sponsored by any game developers or publishers. All product names, logos, and brands are property of their respective owners.</p>
+  <div class="footer-bottom">
+    <div>&copy; 2026 SakinduStore. All rights reserved.</div>
+    <div style="margin-top:8px;">Developed By <a href="developer.html" class="footer-dev-link">Sakindu Daham</a></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/94760627795" target="_blank" class="wa-float">💬</a>
+
+<div class="modal-overlay" id="unavailOverlay">
+  <div class="modal">
+    <button class="close-x" onclick="closeUnavail()">✕</button>
+    <div class="modal-msg-ic">🛠️</div>
+    <h3 style="text-align:center;" id="unavailTitle">Service Temporarily Unavailable</h3>
+    <p class="modal-msg-text" style="margin-top:14px;">
+      කණගාටුයි! <strong id="unavailService"></strong> service එක දැනට maintenance සහ improvement කටයුතු නිසා තාවකාලිකව අක්‍රීය කර තිබෙනවා.
+      අපි මේ feature එක ඉක්මනින්ම වඩාත් හොඳ quality එකකින් සහ විශ්වසනීය ලෙස ඔබ වෙනුවෙන් නැවත ලබා දෙන්න වැඩ කරමින් සිටිනවා.
+      කරුණාකර ටික දිනකින් නැවත check කරන්න, නැත්නම් මේ service එක ලබා ගැනීම සම්බන්ධව වැඩිදුර විස්තර සඳහා WhatsApp හරහා අප හා සම්බන්ධ වන්න. ඔබගේ ඉවසීම අගය කරනවා! 🙏
+    </p>
+    <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary btn-block" style="margin-top:20px;">WhatsApp හරහා අසන්න</a>
+  </div>
+</div>
+
+<script>
+function showUnavailable(name){
+  document.getElementById('unavailService').textContent = name;
+  document.getElementById('unavailOverlay').classList.add('show');
+}
+function closeUnavail(){
+  document.getElementById('unavailOverlay').classList.remove('show');
+}
+(async function(){
+  try{
+    const store = await fsGetConfig('store', { closed:false });
+    if(store.closed){ document.getElementById('storeLockOverlay').classList.add('show'); }
+  } catch(e){ console.error('store-check', e); }
+})();
+</script>
+</body>
+</html>

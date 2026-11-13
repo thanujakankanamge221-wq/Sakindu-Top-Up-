@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shell Topup — Free Fire | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+</head>
+<body class="shell">
+
+<header class="sh-header">
+  <a class="sh-brand" href="shelltopup.html"><span id="shLogo"></span><span>SHELL TOPUP</span></a>
+  <div class="sh-right">
+    <div class="sh-chip" id="shChip" onclick="shOpenRedeem()" title="Shell balance — tap to add shells">🐚 <span id="shBalance">0</span></div>
+    <button class="sh-signin" id="shSignBtn" onclick="shOpenAuth('login')">Sign in</button>
+    <button class="sh-burger" onclick="shToggleMenu(true)" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="sh-drawer-overlay" id="shOverlay" onclick="shToggleMenu(false)"></div>
+<nav class="sh-drawer" id="shDrawer">
+  <div class="sh-d-head"><span id="shDrawerUser">Menu</span><button onclick="shToggleMenu(false)">✕</button></div>
+  <a href="#verifyCard" onclick="shToggleMenu(false)">🔥 Free Fire Top-up</a>
+  <div class="sh-d-item" onclick="shToggleMenu(false);shOpenRedeem()">🎟️ Redeem Pin / Add Shells</div>
+  <a href="#ordersCard" onclick="shToggleMenu(false)">🧾 My Orders</a>
+  <div class="sh-d-sep"></div>
+  <a href="shell-pins.html">🛒 Buy Redeem Pins (SakinduStore)</a>
+  <a href="index.html">🏠 Back to SakinduStore</a>
+  <a href="https://wa.me/94760627795" target="_blank">🎧 Support</a>
+  <div class="sh-d-sep"></div>
+  <div class="sh-d-item" id="shLogoutItem" style="display:none;" onclick="shLogout()">⏻ Sign out</div>
+</nav>
+
+<main class="sh-main">
+  <div class="sh-hero">
+    <h1>Free Fire</h1>
+    <p>Shells වලින් pay කරලා Diamonds, Memberships සහ Level Up Passes ගන්න.<br>Shells ලබාගන්න <a href="shell-pins.html" style="color:var(--sh-cyan);font-weight:700;">SakinduStore Redeem Pins</a> මිලදී ගන්න.</p>
+  </div>
+
+  <section class="sh-panel" id="verifyCard">
+    <h2>1. Player ID</h2>
+    <p class="sub">ඔබේ Free Fire Player ID (UID) එක දාලා verify කරන්න.</p>
+    <div class="sh-row">
+      <input class="sh-input" id="shUid" inputmode="numeric" placeholder="Player ID" oninput="shUidChanged()">
+      <button class="sh-btn" id="shVerifyBtn" onclick="shVerify()">Verify</button>
+    </div>
+    <div class="sh-status" id="shVerifyStatus"></div>
+  </section>
+
+  <section class="sh-panel">
+    <h2>2. Products</h2>
+    <p class="sh-locked-note" id="shLockedNote">Verify your player ID above to unlock these products.</p>
+    <div class="sh-products" id="shProducts"></div>
+    <div class="sh-status" id="shOrderStatus" style="text-align:center;"></div>
+  </section>
+
+  <section class="sh-panel" id="ordersCard">
+    <h2>My Orders</h2>
+    <p class="sub">ඔබේ Shell Topup orders.</p>
+    <div id="shOrders"></div>
+  </section>
+</main>
+
+<div class="sh-checkout" id="shCheckout">
+  <div class="sh-checkout-in">
+    <div class="tot"><span id="shItemsCount">0 items</span><b>🐚 <span id="shTotal">0</span> shells</b></div>
+    <button class="sh-btn" id="shPlaceBtn" onclick="shPlaceOrder()">Place Order</button>
+  </div>
+</div>
+
+<footer class="sh-footer">
+  <p class="disc"><strong>Disclaimer:</strong> Sakindu Topup is an independent third-party digital service provider and is not affiliated with, endorsed by, or sponsored by any game developers or publishers. All product names, logos, and brands are property of their respective owners.</p>
+  <div>අවුරුදු 18ට වැඩි අයට පමණයි · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund-policy.html">Refund Policy</a></div>
+  <div style="margin-top:8px;">&copy; 2026 SakinduStore. All rights reserved.</div>
+</footer>
+
+<!-- AUTH MODAL (Shell Topup has its own accounts, separate from SakinduStore) -->
+<div class="sh-modal-ov" id="shAuthOv">
+  <div class="sh-modal">
+    <button class="x" onclick="shCloseAuth()">✕</button>
+    <h3 id="shAuthTitle">Sign in</h3>
+    <p class="sub" id="shAuthSub">Shell Topup account එකට sign in වෙන්න. (SakinduStore account එකෙන් වෙනස්)</p>
+    <input class="sh-input" id="shAuthName" placeholder="Name" style="display:none;">
+    <input class="sh-input" id="shAuthEmail" type="email" placeholder="Email address" autocomplete="email">
+    <input class="sh-input" id="shAuthPass" type="password" placeholder="Password" autocomplete="current-password">
+    <label class="sh-age" id="shAuthAgeRow" style="display:none;"><input type="checkbox" id="shAuthAge"> <span>මම අවුරුදු 18ට වඩා වැඩියි (18+). Top-up කරන්න පුළුවන් අවුරුදු 18ට වැඩි අයට පමණයි.</span></label>
+    <button class="sh-btn block" id="shAuthBtn" onclick="shSubmitAuth()">Continue</button>
+    <div class="sh-status" id="shAuthMsg"></div>
+    <div class="sh-switch" id="shAuthSwitch"></div>
+  </div>
+</div>
+
+<!-- REDEEM MODAL -->
+<div class="sh-modal-ov" id="shRedeemOv">
+  <div class="sh-modal">
+    <button class="x" onclick="shCloseRedeem()">✕</button>
+    <h3>🎟️ Redeem Pin</h3>
+    <p class="sub">SakinduStore එකෙන් මිලදී ගත් Redeem Pin එක දාන්න — ඒ Shells ගාන ඔබේ Shell wallet එකට add වේ.</p>
+    <div style="text-align:center;margin-bottom:14px;"><span style="color:var(--sh-muted);">Current balance</span><div style="font-size:1.8rem;font-weight:800;">🐚 <span id="shRedeemBal">0</span></div></div>
+    <input class="sh-input" id="shPinInput" placeholder="Redeem Pin code" autocomplete="off">
+    <button class="sh-btn block" id="shRedeemBtn" onclick="shRedeem()">Redeem</button>
+    <div class="sh-status" id="shRedeemMsg"></div>
+    <a class="sh-btn ghost block" style="text-align:center;margin-top:12px;" href="shell-pins.html">🛒 Redeem Pins මිලදී ගන්න</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="db.js"></script>
+<script src="shell-data.js"></script>
+<script src="player-info.js"></script>
+<script src="shell.js"></script>
+</body>
+</html>
