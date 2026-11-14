@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shell Topup Redeem Pins | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Sakindu<span>Store</span></a>
+  <nav class="desktop-nav">
+    <a href="index.html">Home</a>
+    <a href="premium.html">Other Service</a>
+    <a href="shelltopup.html">🐚 Shell Topup</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="#" onclick="openAuth('login');return false;" id="navAuthLink">Login</a>
+  </nav>
+</header>
+
+<div class="store-lock-overlay" id="storeLockOverlay">
+  <div class="lock-ic">🛠️</div>
+  <h1>Admin Maintenancing Website</h1>
+  <p>We are currently performing scheduled maintenance on SakinduStore. The site will be back online shortly. Thank you for your patience.</p>
+  <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary">Contact us on WhatsApp</a>
+</div>
+
+<section class="hero-mini">
+  <h1>🐚 Shell Topup <span style="color:var(--gold);">Redeem Pins</span></h1>
+  <p>Pin එක මිලදී අරන්, <a href="shelltopup.html" style="color:var(--cyan);">Shell Topup</a> එකේ Redeem කරලා Shells ලබාගන්න — ඒ Shells වලින් Free Fire Diamonds, Memberships සහ Level Up Passes ගන්න.</p>
+</section>
+
+<section>
+  <div class="pin-grid" id="pinGrid"><p style="color:var(--muted);text-align:center;grid-column:1/-1;">Loading...</p></div>
+  <p style="text-align:center;color:var(--muted);margin-top:26px;font-size:.9rem;">Redeem Pin එකක් එක් වරක් පමණක් භාවිත කළ හැක. මිල LKR වලින්.</p>
+</section>
+
+<footer>
+  <p class="footer-disclaimer"><strong>Disclaimer:</strong> Sakindu Topup is an independent third-party digital service provider and is not affiliated with, endorsed by, or sponsored by any game developers or publishers. All product names, logos, and brands are property of their respective owners.</p>
+  <div class="footer-bottom">
+    <div>&copy; 2026 SakinduStore. All rights reserved.</div>
+    <div style="margin-top:8px;">Developed By <a href="developer.html" class="footer-dev-link">Sakindu Daham</a></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/94760627795" target="_blank" class="wa-float">💬</a>
+
+<!-- BUY MODAL -->
+<div class="modal-overlay" id="buyOverlay">
+  <div class="modal">
+    <button class="close-x" onclick="closeBuy()">✕</button>
+    <h3 id="buyTitle">ShellTopUp Redeem Pin</h3>
+    <p class="modal-sub" id="buySub"></p>
+
+    <div id="buyForm">
+      <div class="wallet-balance-block" id="buyWalletBlock" style="display:block;">
+        <div class="wb-row"><div><div class="wb-title">ඔබේ Wallet Balance</div><div class="amt" id="buyWalletBal">Rs. 0.00</div></div>
+          <a href="wallet.html" class="btn btn-ghost btn-sm">＋ Recharge</a></div>
+        <div class="wb-short" id="buyShortHint" style="display:none;"></div>
+        <div class="wb-note">Wallet Balance එකෙන් පමණක් pay කළ හැක — Pin එක ක්ෂණිකව ලැබේ.</div>
+      </div>
+      <div class="order-total"><div>Total</div><div class="amount" id="buyTotal">Rs. 0</div></div>
+      <button class="btn btn-primary btn-block" id="buyBtn" style="margin-top:18px;" onclick="confirmBuy()">Confirm Purchase</button>
+    </div>
+    <div id="buyMsg" class="verify-status" style="text-align:center;margin-top:12px;"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="db.js"></script>
+<script src="shell-data.js"></script>
+<script src="app.js"></script>
+<script src="shell-pins.js"></script>
+</body>
+</html>

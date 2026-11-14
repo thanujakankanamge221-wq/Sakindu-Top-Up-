@@ -1,4 +1,5 @@
 /* ===== Player info lookup (UID -> nickname, level, region) =====
+   EVERY check goes to the live API (cache: 'no-store'); nothing from a lookup is cached or saved in the database.
    Calls the player-info API straight from the browser. If that API does not allow browser calls (CORS) put the
    Cloudflare relay in front of it (cloudflare-worker/README.md) and paste the relay URL here instead.
    `{uid}` is replaced by the UID being checked. Leave empty to turn the live lookup off. */
@@ -63,7 +64,7 @@ async function piAttempt(uid){
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), PLAYER_INFO_TIMEOUT_MS);
   try{
-    const r = await fetch(piBuildUrl(uid), { signal: ctl.signal });
+    const r = await fetch(piBuildUrl(uid), { signal: ctl.signal, cache: 'no-store' });   // always the live API — never a cached copy
     const raw = await r.text();
     let d = null; try{ d = JSON.parse(raw); }catch(e){}
     if(!d) return { retry: true };                                  // HTML / "server is waking up" page, empty body ...
@@ -97,3 +98,13 @@ function playerRegionWarning(infoRegion, selectedStoreRegion){
   return '⚠️ මේ account එකේ region එක ' + infoRegion + ' — ඔබ තෝරපු region එක (' + selectedStoreRegion + ') වෙනස්. නිවැරදි region එක තෝරන්න.';
 }
 if(typeof window !== 'undefined') window.addEventListener('load', warmUpPlayerInfo);
+
+/* Final live check right before an order is charged. Returns { ok:true, info } or { ok:false, message }. */
+async function liveVerifyBeforeOrder(uid){
+  if(!PLAYER_INFO_URL) return { ok: true, info: null };
+  const info = await lookupPlayerInfo(uid);
+  if(info.ok) return { ok: true, info };
+  return { ok: false, message: info.error === 'not_found'
+    ? '❌ මේ UID එක හොයාගන්න බැරි උනා. UID එක නිවැරදිද බලන්න.'
+    : '⚠️ UID එක verify කරන්න බැරි උනා (සේවාව දැනට වැඩ නැහැ). ටිකකින් නැවත try කරන්න.' };
+}

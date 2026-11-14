@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="pf-body">
+
+<header>
+  <a href="index.html" class="logo">Sakindu<span>Store</span></a>
+  <nav class="desktop-nav">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="wallet.html">Wallet</a>
+  </nav>
+</header>
+
+<div class="store-lock-overlay" id="storeLockOverlay">
+  <div class="lock-ic">🛠️</div>
+  <h1>Admin Maintenancing Website</h1>
+  <p>We are currently performing scheduled maintenance on SakinduStore. The site will be back online shortly. Thank you for your patience.</p>
+  <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary">Contact us on WhatsApp</a>
+</div>
+
+<main class="pf-wrap" id="pfRoot"></main>
+
+<!-- bottom tab bar -->
+<nav class="pf-tabs">
+  <a href="index.html"><span>🏠</span>home</a>
+  <a href="games.html"><span>🛍️</span>shop</a>
+  <a href="wallet.html"><span>⚡</span>recharge</a>
+  <a href="index.html#orders"><span>🕘</span>history</a>
+  <a href="profile.html" class="on"><span>👤</span>profile</a>
+</nav>
+
+<!-- generic sheet modal -->
+<div class="modal-overlay" id="pfSheetOverlay" onclick="if(event.target===this)closePfSheet()">
+  <div class="modal pf-sheet">
+    <button class="close-x" onclick="closePfSheet()">✕</button>
+    <div id="pfSheetBody"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script src="profile.js"></script>
+</body>
+</html>

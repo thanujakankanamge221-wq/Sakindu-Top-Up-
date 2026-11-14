@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Wallet | SakinduStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Sakindu<span>Store</span></a>
+  <nav class="desktop-nav">
+    <a href="index.html">Home</a>
+    <a href="index.html#games">Games</a>
+    <a href="index.html#orders">Orders</a>
+  </nav>
+</header>
+
+<div class="store-lock-overlay" id="storeLockOverlay">
+  <div class="lock-ic">🛠️</div>
+  <h1>Admin Maintenancing Website</h1>
+  <p>We are currently performing scheduled maintenance on SakinduStore. The site will be back online shortly. Thank you for your patience.</p>
+  <a href="https://wa.me/94760627795" target="_blank" class="btn btn-primary">Contact us on WhatsApp</a>
+</div>
+
+<section class="wl-page">
+  <div class="wl-title">
+    <h1>MY <span>WALLET</span></h1>
+    <p>DEPOSIT &amp; MANAGE YOUR GAME TOP-UP FUNDS</p>
+  </div>
+
+  <div class="wl-balance">
+    <div>
+      <div class="wl-bal-pill">👛 TOTAL BALANCE</div>
+      <div class="wl-bal-amt"><small>Rs.</small> <span id="walletTotalBalance">0.00</span></div>
+    </div>
+    <svg class="wl-wallet-ico" viewBox="0 0 120 100" aria-hidden="true">
+      <defs><linearGradient id="wlg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd0ff"/><stop offset="1" stop-color="#2f6bff"/></linearGradient>
+      <linearGradient id="wlg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#ffb020"/></linearGradient></defs>
+      <ellipse cx="62" cy="14" rx="22" ry="12" fill="url(#wlg2)"/><ellipse cx="62" cy="14" rx="14" ry="7" fill="#ffd45a"/>
+      <rect x="8" y="22" width="96" height="72" rx="20" fill="url(#wlg1)"/>
+      <rect x="62" y="44" width="52" height="28" rx="14" fill="#9ed8ff" opacity=".95"/><circle cx="80" cy="58" r="7" fill="#5aa8ff"/>
+    </svg>
+  </div>
+
+  <a id="wlHowTo" class="wl-howto" style="display:none;" target="_blank" rel="noopener">
+    <span class="yt">▶</span><span>තේරෙන්නේ නැත්නම් මේ වීඩියෝ එක බලන්න (How to Deposit &amp; Top-Up)</span><span class="play">▸</span>
+  </a>
+
+  <!-- STEP 1 : choose method -->
+  <div id="wlMethods">
+    <div class="wl-sec-title">SELECT PAYMENT METHOD <small>(ගෙවීම් ක්‍රමය තෝරන්න)</small></div>
+    <div class="wl-sec-sub">තැන්පත් කිරීමට අවශ්‍ය ගෙවීම් ක්‍රමය මත Click කරන්න</div>
+
+    <button type="button" class="wl-method ez" onclick="openDeposit('ez')">
+      <span class="wl-logo ez big">eZ <i>Cash</i></span>
+      <span class="wl-m-body"><b>eZ Cash</b><em>තැන්පත් කිරීමට Click කරන්න →</em></span>
+      <span class="wl-arrow">›</span>
+    </button>
+    <button type="button" class="wl-method bank" onclick="openDeposit('bank')">
+      <span class="wl-logo bank big">🏦</span>
+      <span class="wl-m-body"><b>Bank Transfer</b><em>තැන්පත් කිරීමට Click කරන්න →</em></span>
+      <span class="wl-arrow">›</span>
+    </button>
+    <div style="text-align:center;margin-top:14px;">
+      <a href="https://wa.me/94760627795?text=Payment%20Methods" target="_blank" class="btn btn-ghost btn-sm">💬 Payment Details WhatsApp එකෙන් ගන්න</a>
+    </div>
+
+    <div class="wl-card" style="margin-top:22px;">
+      <div class="wl-card-h">🎁 Redeem Code</div>
+      <p class="wl-muted">Redeem code එකක් තියෙනවා නම් type කරන්න — Wallet Balance එකට add වේ.</p>
+      <div class="field-row" style="margin:10px 0 0;">
+        <input type="text" id="redeemInput" placeholder="e.g. SAKINDU100">
+        <button class="btn btn-primary" onclick="redeemCode()">Redeem</button>
+      </div>
+      <div id="redeemStatus" class="verify-status"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 : deposit form -->
+  <div id="wlDeposit" style="display:none;">
+    <div class="wl-dep-top">
+      <button type="button" class="wl-back" onclick="closeDeposit()">‹ Back</button>
+      <div class="wl-dep-badge" id="wlDepBadge"></div>
+    </div>
+
+    <div class="wl-card">
+      <div class="wl-card-head"><span class="wl-ico g">🧾</span><div><b>DEPOSIT FUNDS FORM</b><small>මුදල් තැන්පත් කිරීමේ විස්තර ඇතුළත් කරන්න</small></div></div>
+
+      <label class="wl-label">AMOUNT TO DEPOSIT (LKR) <i>*</i></label>
+      <div class="wl-amount"><span>Rs.</span><input type="number" id="depAmount" inputmode="numeric" min="100" placeholder="1000" oninput="renderDepQuick()"></div>
+      <div class="wl-quick" id="depQuick"></div>
+      <div class="wl-min">අවම Deposit එක <b>Rs. 100</b></div>
+
+      <!-- eZ Cash only -->
+      <div id="wlEzOnly">
+        <div class="wl-box">
+          <label class="wl-label" style="margin-top:0;">මුදල් දැමූ ආකාරය තෝරන්න (TRANSFER SOURCE) <i>*</i></label>
+          <div class="wl-opts" id="wlSource">
+            <button type="button" class="wl-opt on" data-v="own" onclick="setDepSource('own')"><span class="dot"></span><span><b>මගේම eZ Cash</b><em class="good">ගාස්තු නැත (Full Credit)</em></span></button>
+            <button type="button" class="wl-opt" data-v="agent" onclick="setDepSource('agent')"><span class="dot"></span><span><b>කඩයකින් (Shop / Agent)</b><em class="warn">-රු. 20 ගාස්තුවක් අඩුවේ</em></span></button>
+          </div>
+        </div>
+
+        <label class="wl-label">PAYMENT VERIFICATION PROOF <i>*</i></label>
+        <div class="wl-tabs" id="wlProofTabs">
+          <button type="button" class="on" data-v="ref" onclick="setDepProof('ref')"># Reference &amp; Time</button>
+          <button type="button" data-v="slip" onclick="setDepProof('slip')">🧾 Upload Slip / Receipt</button>
+        </div>
+
+        <div id="wlProofRef" class="wl-box">
+          <label class="wl-label sm" style="margin-top:0;">1. REFERENCE NUMBER <small>(රෙෆරන්ස් අංකය)</small> <i>*</i></label>
+          <input type="text" id="depRef" class="wl-input" placeholder="e.g. 2026**********" autocomplete="off">
+          <div class="wl-time-head">
+            <label class="wl-label sm" style="margin:0;">2. PAYMENT TIME <small>(මුදල් දැමූ වේලාව)</small> <i>*</i></label>
+            <button type="button" class="wl-now" onclick="setDepNow()">🕒 දැන් (Now)</button>
+          </div>
+          <div class="wl-time">
+            <div class="wl-time-row">
+              <select id="depHour" class="wl-sel" onchange="onDepTimeChange()"></select><b>:</b>
+              <select id="depMin" class="wl-sel" onchange="onDepTimeChange()"></select>
+              <div class="wl-ampm" id="depAmPm"><button type="button" data-v="AM" onclick="setDepAmPm('AM')">AM</button><button type="button" data-v="PM" onclick="setDepAmPm('PM')">PM</button></div>
+            </div>
+            <div class="wl-time-show"><span>තෝරාගත් වේලාව:</span><strong id="depTimeShow">12:00 AM</strong></div>
+          </div>
+        </div>
+
+        <div id="wlProofSlip" style="display:none;">
+          <input type="file" id="depSlipFile" accept="image/png,image/jpeg" style="display:none;" onchange="onSlipPicked(this)">
+          <label class="wl-drop" for="depSlipFile"><div class="cloud">☁️⬆</div><div id="depSlipLabel">Click to select eZ Cash Deposit Slip / Receipt Photo</div><small>PNG, JPG, JPEG (Max 12MB)</small></label>
+        </div>
+      </div>
+
+      <!-- Bank only -->
+      <div id="wlBankOnly" style="display:none;">
+        <label class="wl-label">BANK DEPOSIT SLIP / RECEIPT <i>*</i></label>
+        <input type="file" id="depSlipFileBank" accept="image/png,image/jpeg" style="display:none;" onchange="onSlipPicked(this)">
+        <label class="wl-drop" for="depSlipFileBank"><div class="cloud">☁️⬆</div><div id="depSlipLabelBank">Click to select Bank Deposit Slip / Transfer Screenshot</div><small>PNG, JPG, JPEG (Max 12MB)</small></label>
+      </div>
+
+      <div id="depStatus" class="verify-status"></div>
+      <div class="wl-actions">
+        <button type="button" class="wl-cancel" onclick="closeDeposit()">CANCEL</button>
+        <button type="button" class="wl-submit" id="depSubmitBtn" onclick="submitDeposit()">SUBMIT DEPOSIT REQUEST</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- history -->
+  <div class="wl-card" id="rechargeHistory" style="margin-top:20px;">
+    <div class="wl-card-h">🕘 DEPOSIT HISTORY</div>
+    <div id="rechargeHistoryList"></div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-disclaimer"><strong>Disclaimer:</strong> Sakindu Topup is an independent third-party digital service provider and is not affiliated with, endorsed by, or sponsored by any game developers or publishers. All product names, logos, and brands are property of their respective owners.</p>
+  <div class="footer-bottom">
+    <div>&copy; 2026 SakinduStore. All rights reserved.</div>
+    <div style="margin-top:8px;">Developed By <a href="developer.html" class="footer-dev-link">Sakindu Daham</a></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/94760627795" target="_blank" class="wa-float">💬</a>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>(function(){ if(typeof HOW_TO_DEPOSIT_VIDEO_URL !== "undefined" && HOW_TO_DEPOSIT_VIDEO_URL){ var a=document.getElementById("wlHowTo"); a.href=HOW_TO_DEPOSIT_VIDEO_URL; a.style.display="flex"; } })();</script>
+</body>
+</html>

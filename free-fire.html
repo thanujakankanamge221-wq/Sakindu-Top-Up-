@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Fire Top Up | SakinduStore</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="images.js"></script>
 </head>
@@ -72,19 +72,18 @@
       <input type="text" id="waInput" placeholder="WhatsApp Number (Optional)">
     </div>
 
-    <div class="step-label" style="margin-top:10px;"><div class="step-num">2</div><h3>SELECT PACKAGE</h3></div>
+    <div class="step-label" style="margin-top:10px;"><div class="step-num">3</div><h3>SELECT PACKAGE</h3></div>
     <div class="cat-tabs" id="catTabs"></div>
     <div id="pkgContainer"></div>
 
-    <div class="step-label" style="margin-top:26px;"><div class="step-num">3</div><h3>PAYMENT METHOD</h3></div>
-    <div class="pay-methods">
-      <div class="pay-method selected" onclick="selectPay('Bank Transfer', this)">🏦 Bank Transfer</div>
-      <div class="pay-method" onclick="selectPay('Ez Cash', this)">📱 Ez Cash</div>
-      <div class="pay-method" onclick="selectPay('Bank Wallet', this)">🏦 Bank Wallet</div>
-      <div class="pay-method" onclick="selectPay('EZ Cash / Redeem Wallet', this)">📱 EZ Cash / Redeem Wallet</div>
-    </div>
-    <div style="text-align:center;margin:12px 0;">
-      <a href="https://wa.me/94760627795?text=Payment%20Methods" target="_blank" class="btn btn-ghost btn-sm">💬 Payment Details WhatsApp එකෙන් ගන්න</a>
+    <div class="step-label" style="margin-top:26px;"><div class="step-num">4</div><h3>PAYMENT — WALLET BALANCE</h3></div>
+    <div class="wallet-balance-block" id="walletBalanceBlock" style="display:block;">
+      <div class="wb-row">
+        <div><div class="wb-title">ඔබේ Wallet Balance</div><div class="amt" id="walletBalanceDisplay">Rs. 0.00</div></div>
+        <a href="wallet.html" class="btn btn-ghost btn-sm">＋ Recharge</a>
+      </div>
+      <div class="wb-short" id="walletShortHint" style="display:none;"></div>
+      <div class="wb-note">Order එක Wallet Balance එකෙන් පමණක් pay කළ හැක. Confirm කළාම amount එක deduct වී, Admin Approve කරනකම් Processing එකේ පවතී.</div>
     </div>
 
     <div class="order-total">
@@ -93,20 +92,7 @@
     </div>
     <div class="fee-line" id="feeLine" style="display:none;"></div>
 
-    <div id="receiptBlock">
-      <div class="step-label" style="margin-top:26px;"><div class="step-num">4</div><h3>UPLOAD PAYMENT RECEIPT</h3></div>
-      <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px;">Payment කරපු පසු, screenshot එක හෝ bank slip එක මෙතනින් upload කරන්න. WhatsApp open වෙන්නේ නැහැ — order එක site එකෙන්ම submit වෙනවා, Admin verify කරලා approve කරනකම් "Processing" status එකේ පවතී.</p>
-      <input type="file" id="receiptFile" accept="image/*" style="display:none;" onchange="document.getElementById('receiptFileLabel').textContent = '📎 ' + (this.files[0] ? this.files[0].name : 'Click to upload receipt')">
-      <div class="upload-box" onclick="document.getElementById('receiptFile').click()" id="receiptFileLabel">📎 Click to upload payment receipt *</div>
-    </div>
-
-    <div class="wallet-balance-block" id="walletBalanceBlock">
-      <div style="color:var(--muted);font-size:.9rem;margin-bottom:6px;" id="walletBalanceTitle">ඔබේ Wallet Balance එක</div>
-      <div class="amt" id="walletBalanceDisplay">Rs. 0</div>
-      <div style="color:var(--muted);font-size:.85rem;margin-top:8px;">Order confirm කළාම මේ balance එකෙන් amount එක deduct වී, instant approve වේ.</div>
-    </div>
-
-    <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="placeOrder()">Order එක Submit කරන්න</button>
+    <button class="btn btn-primary btn-block" id="placeOrderBtn" style="margin-top:20px;" onclick="placeOrder()">Wallet එකෙන් Pay කරලා Order කරන්න</button>
     <div id="orderMsg" class="verify-status" style="text-align:center;margin-top:10px;"></div>
   </div>
 </section>
